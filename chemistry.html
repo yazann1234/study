@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الكيمياء — MyStudy</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div id="page-content"></div>
+
+<script src="assets/app.js"></script>
+<script>
+/* =============================================================
+   لتعديل المحتوى: غيّر مسار "video" ليشير لملف الفيديو في جهازك
+   (مثال: "videos/chem-u1-l1.mp4") وكذلك مسار "file" لملف الشرح PDF،
+   وضع رابط نموذج Google Forms الخاص بك في "quizForm" لكل وحدة.
+   ============================================================= */
+window.SECTION_DATA = {
+  key: 'chemistry',
+  title: 'الكيمياء',
+  en: 'Chemistry',
+  icon: 'flask',
+  tagline: 'رحلة التفاعل بين المعرفة والنجاح',
+  units: [
+    {
+      id: 'u1', title: 'الروابط الكيميائية',
+      quizForm: 'https://docs.google.com/forms/d/e/PUT_YOUR_FORM_ID/viewform?embedded=true',
+      lessons: [
+        { id:'l1', title:'الرابطة التساهمية', summary:'شرح شامل لكيفية تشارك الذرات للإلكترونات وتكوّن الروابط التساهمية الأحادية والثنائية والثلاثية مع أمثلة مباشرة.', video:'videos/chem-u1-l1.mp4', videoHint:'videos/chem-u1-l1.mp4', file:'files/chem-u1-l1.pdf' },
+        { id:'l2', title:'الرابطة الأيونية', summary:'كيف تنتقل الإلكترونات بين الفلزات واللافلزات لتكوين أيونات موجبة وسالبة، وخصائص المركبات الأيونية الناتجة.', video:'videos/chem-u1-l2.mp4', videoHint:'videos/chem-u1-l2.mp4', file:'files/chem-u1-l2.pdf' },
+        { id:'l3', title:'الرابطة الفلزية', summary:'تفسير بحر الإلكترونات في الفلزات وعلاقته بالتوصيل الكهربائي والحراري والليونة.', video:'videos/chem-u1-l3.mp4', videoHint:'videos/chem-u1-l3.mp4', file:'files/chem-u1-l3.pdf' },
+      ]
+    },
+    {
+      id: 'u2', title: 'التفاعلات الكيميائية',
+      quizForm: 'https://docs.google.com/forms/d/e/PUT_YOUR_FORM_ID/viewform?embedded=true',
+      lessons: [
+        { id:'l1', title:'موازنة المعادلات الكيميائية', summary:'خطوات عملية لموازنة المعادلات باستخدام قانون حفظ الكتلة مع أمثلة متدرجة الصعوبة.', video:'videos/chem-u2-l1.mp4', videoHint:'videos/chem-u2-l1.mp4', file:'files/chem-u2-l1.pdf' },
+        { id:'l2', title:'أنواع التفاعلات الكيميائية', summary:'تصنيف التفاعلات إلى اتحاد وتحلل وإحلال أحادي وثنائي مع أمثلة من الحياة اليومية.', video:'videos/chem-u2-l2.mp4', videoHint:'videos/chem-u2-l2.mp4', file:'files/chem-u2-l2.pdf' },
+        { id:'l3', title:'معدل التفاعل والعوامل المؤثرة', summary:'أثر التركيز ودرجة الحرارة والعامل الحفّاز على سرعة التفاعلات الكيميائية.', video:'videos/chem-u2-l3.mp4', videoHint:'videos/chem-u2-l3.mp4', file:'files/chem-u2-l3.pdf' },
+      ]
+    },
+    {
+      id: 'u3', title: 'الكيمياء العضوية',
+      quizForm: 'https://docs.google.com/forms/d/e/PUT_YOUR_FORM_ID/viewform?embedded=true',
+      lessons: [
+        { id:'l1', title:'الهيدروكربونات', summary:'التعرف على الألكانات والألكينات والألكاينات وطرق تسميتها وخصائصها الأساسية.', video:'videos/chem-u3-l1.mp4', videoHint:'videos/chem-u3-l1.mp4', file:'files/chem-u3-l1.pdf' },
+        { id:'l2', title:'المجموعات الوظيفية', summary:'أهم المجموعات الوظيفية العضوية مثل الكحولات والأحماض الكربوكسيلية وتأثيرها على خصائص المركب.', video:'videos/chem-u3-l2.mp4', videoHint:'videos/chem-u3-l2.mp4', file:'files/chem-u3-l2.pdf' },
+        { id:'l3', title:'البوليمرات', summary:'كيف تتكون الجزيئات الكبيرة من وحدات متكررة، وأمثلة على البوليمرات الطبيعية والصناعية.', video:'videos/chem-u3-l3.mp4', videoHint:'videos/chem-u3-l3.mp4', file:'files/chem-u3-l3.pdf' },
+      ]
+    },
+    {
+      id: 'u4', title: 'المحاليل والحسابات الكيميائية',
+      quizForm: 'https://docs.google.com/forms/d/e/PUT_YOUR_FORM_ID/viewform?embedded=true',
+      lessons: [
+        { id:'l1', title:'التركيز المولاري', summary:'طريقة حساب التركيز المولاري للمحاليل وتطبيقاته في المسائل الكيميائية.', video:'videos/chem-u4-l1.mp4', videoHint:'videos/chem-u4-l1.mp4', file:'files/chem-u4-l1.pdf' },
+        { id:'l2', title:'التخفيف وحساباته', summary:'قانون التخفيف وكيفية تحضير محلول أقل تركيزاً من محلول أصلي بخطوات دقيقة.', video:'videos/chem-u4-l2.mp4', videoHint:'videos/chem-u4-l2.mp4', file:'files/chem-u4-l2.pdf' },
+      ]
+    },
+  ]
+};
+</script>
+<script src="assets/section.js"></script>
+</body>
+</html>

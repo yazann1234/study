@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>جدولي الدراسي — MyStudy</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div id="page-content">
+  <div class="pagehead">
+    <h1>جدولي الدراسي</h1>
+    <p>نظّم أسبوعك الدراسي بحيث تخصص وقتاً لكل مادة، والتزم بالتوقيت قدر الإمكان.</p>
+  </div>
+
+  <div class="simple-card">
+    <h3 style="margin-bottom:14px">الخطة الأسبوعية</h3>
+    <div class="timetable" id="timetable"></div>
+  </div>
+
+  <div class="simple-card" id="pomodoro" style="max-width:360px">
+    <h3 style="margin-bottom:6px">مؤقت بومودورو</h3>
+    <p style="color:var(--ink-dim);font-size:12.5px;margin-bottom:10px">25 دقيقة تركيز، ثم 5 دقائق راحة — كرر الدورة لزيادة إنتاجيتك.</p>
+    <div class="pomo-widget">
+      <div id="pomoLabel" style="font-size:12.5px;color:var(--ink-dim)">وقت التركيز</div>
+      <div class="pomo-time" id="pomoTime">25:00</div>
+      <div class="pomo-controls">
+        <button id="pomoStart">ابدأ</button>
+        <button class="alt" id="pomoReset">إعادة ضبط</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="assets/app.js"></script>
+<script src="assets/schedule.js"></script>
+</body>
+</html>
