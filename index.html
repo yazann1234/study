@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MyStudy — موقعك الدراسي</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=El+Messiri:wght@500;600;700&family=Cairo:wght@400;500;600;700&display=swap');
+
+:root{
+  --bg: #F3F2FA; --bg-soft:#FFFFFF; --ink:#201C33; --ink-dim:#6E6A85; --line:#E7E4F3; --card:#FFFFFF;
+  --shadow: 0 10px 30px -14px rgba(45,32,90,.18);
+  --chem:#7C3AED; --chem-dk:#5B21B6; --chem-lt:#EFE6FE;
+  --eng:#2563EB;  --eng-dk:#1D4ED8;  --eng-lt:#E3ECFE;
+  --comm:#C1873F; --comm-dk:#9C6A2C; --comm-lt:#FBEEDC;
+  --med:#0E9CAE;  --med-dk:#0B7C8B;  --med-lt:#DFF6F8;
+  --accent:var(--chem); --accent-dk:var(--chem-dk); --accent-lt:var(--chem-lt);
+  --radius:18px; --radius-sm:12px;
+}
+[data-theme="dark"]{
+  --bg:#14121F; --bg-soft:#1B1930; --ink:#F1EFFB; --ink-dim:#9C97B8; --line:#2B2745; --card:#1E1B34;
+  --shadow: 0 10px 30px -14px rgba(0,0,0,.5);
+  --chem-lt:#2B2145; --eng-lt:#1B2740; --comm-lt:#332617; --med-lt:#132E32;
+}
+body[data-section="chemistry"]{ --accent:var(--chem); --accent-dk:var(--chem-dk); --accent-lt:var(--chem-lt); }
+body[data-section="english"]{ --accent:var(--eng); --accent-dk:var(--eng-dk); --accent-lt:var(--eng-lt); }
+body[data-section="communication"]{ --accent:var(--comm); --accent-dk:var(--comm-dk); --accent-lt:var(--comm-lt); }
+body[data-section="medical"]{ --accent:var(--med); --accent-dk:var(--med-dk); --accent-lt:var(--med-lt); }
+
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{ margin:0; direction:rtl; text-align:right; background:var(--bg); color:var(--ink); font-family:'Cairo',sans-serif; font-size:15px; line-height:1.7; transition:background .25s,color .25s; }
+h1,h2,h3,h4{ font-family:'El Messiri',serif; font-weight:700; margin:0; color:var(--ink); }
+a{ color:inherit; text-decoration:none; }
+button{ font-family:inherit; cursor:pointer; border:none; }
+img,video{ max-width:100%; display:block; }
+:focus-visible{ outline:3px solid var(--accent); outline-offset:2px; }
+@media (prefers-reduced-motion: reduce){ *{ animation:none !important; transition:none !important; } }
+
+.app{ display:grid; grid-template-columns:250px 1fr; min-height:100vh; }
+.sidebar{ background:var(--bg-soft); border-left:1px solid var(--line); padding:22px 18px; position:sticky; top:0; height:100vh; overflow-y:auto; }
+.brand{ display:flex; align-items:center; gap:10px; padding:6px 4px 22px; }
+.brand .mark{ width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center; background:linear-gradient(135deg,var(--chem),var(--eng)); color:#fff; font-family:'El Messiri',serif; font-weight:700; font-size:18px; }
+.brand .name{ font-family:'El Messiri',serif; font-weight:700; font-size:19px; }
+.brand .tag{ font-size:11.5px; color:var(--ink-dim); }
+.who{ display:flex; align-items:center; gap:10px; background:var(--accent-lt); border-radius:var(--radius-sm); padding:10px 12px; margin-bottom:18px; }
+.who .avatar{ width:38px;height:38px;border-radius:50%; background:var(--accent); color:#fff; display:flex;align-items:center;justify-content:center; font-weight:700; }
+.who .hi{ font-size:12px; color:var(--ink-dim); }
+.who .uname{ font-weight:700; font-size:13.5px; }
+nav.mainnav{ display:flex; flex-direction:column; gap:3px; }
+nav.mainnav a{ display:flex; align-items:center; gap:11px; padding:10px 12px; border-radius:var(--radius-sm); color:var(--ink-dim); font-weight:600; font-size:14px; }
+nav.mainnav a svg{ width:19px; height:19px; flex:none; }
+nav.mainnav a:hover{ background:var(--bg); color:var(--ink); }
+nav.mainnav a.active{ background:var(--accent); color:#fff; }
+.nav-sep{ height:1px; background:var(--line); margin:14px 2px; }
+.grow-card{ margin-top:20px; background:var(--bg); border:1px dashed var(--line); border-radius:var(--radius); padding:16px; text-align:center; font-size:13px; color:var(--ink-dim); }
+.grow-card .leaf{ font-size:22px; margin-bottom:6px; }
+
+.main{ padding:20px 26px 60px; min-width:0; }
+.topbar{ display:flex; align-items:center; gap:14px; margin-bottom:18px; }
+.search{ flex:1; display:flex; align-items:center; gap:10px; background:var(--card); border:1px solid var(--line); border-radius:999px; padding:11px 18px; box-shadow:var(--shadow); }
+.search input{ border:none; background:none; flex:1; font-family:inherit; font-size:14px; color:var(--ink); }
+.search input:focus{ outline:none; }
+.icon-btn{ width:42px;height:42px;border-radius:50%; background:var(--card); border:1px solid var(--line); display:flex;align-items:center;justify-content:center; box-shadow:var(--shadow); position:relative; flex:none; }
+.icon-btn svg{ width:19px;height:19px; }
+.dot{ position:absolute; top:9px; left:10px; width:7px;height:7px;border-radius:50%; background:#EF4444; }
+.content-grid{ display:grid; grid-template-columns:1fr 320px; gap:22px; align-items:start; }
+.rightcol{ display:flex; flex-direction:column; gap:18px; }
+
+.hero{ border-radius:var(--radius); overflow:hidden; position:relative; min-height:190px; display:flex; align-items:center; padding:26px 30px; margin-bottom:22px; color:#fff;
+  background:linear-gradient(120deg, rgba(20,15,40,.86), rgba(60,30,90,.55)), url('https://images.unsplash.com/photo-1497633762265-9d179a990aa6?q=80&w=1400&auto=format&fit=crop') center/cover; }
+.hero .htext{ max-width:560px; }
+.hero h1{ color:#fff; font-size:26px; margin-bottom:8px; }
+.hero p{ margin:0; opacity:.92; font-size:14px; line-height:1.9;}
+
+.cards4{ display:grid; grid-template-columns:repeat(4,1fr); gap:18px; margin-bottom:26px; }
+.scard{ background:var(--card); border-radius:var(--radius); padding:20px 18px; box-shadow:var(--shadow); border-top:4px solid var(--c); display:flex; flex-direction:column; gap:12px; position:relative; overflow:hidden; }
+.scard .icon{ width:62px;height:62px;border-radius:50%; display:flex;align-items:center;justify-content:center; background:var(--c); color:#fff; font-size:26px; margin:0 auto; }
+.scard h3{ text-align:center; font-size:18px; }
+.scard .en{ text-align:center; font-size:12px; color:var(--ink-dim); margin-top:-8px; }
+.scard .stats{ display:flex; justify-content:center; gap:14px; font-size:11.5px; color:var(--ink-dim); }
+.scard .stats b{ display:block; color:var(--ink); font-size:13px; }
+.scard .progress-row{ display:flex; align-items:center; gap:8px; font-size:11px; color:var(--ink-dim); }
+.pbar{ flex:1; height:6px; border-radius:99px; background:var(--bg); overflow:hidden; }
+.pbar > span{ display:block; height:100%; background:var(--c); border-radius:99px; }
+.scard .enter{ margin-top:4px; background:var(--c); color:#fff; border-radius:11px; padding:11px; text-align:center; font-weight:700; font-size:13.5px; display:flex; align-items:center; justify-content:center; gap:6px; }
+
+.widget{ background:var(--card); border-radius:var(--radius); padding:16px; box-shadow:var(--shadow); }
+.widget h4{ font-size:14.5px; margin-bottom:12px; }
+.tool-list a, .tool-list button.tool{ display:flex; align-items:center; justify-content:space-between; gap:8px; padding:10px 10px; border-radius:var(--radius-sm); font-size:13.5px; font-weight:600; color:var(--ink); background:none; width:100%; text-align:right; }
+.tool-list a:hover, .tool-list button.tool:hover{ background:var(--bg); }
+.tool-list svg{ width:17px;height:17px; color:var(--ink-dim); }
+.plan-item{ display:flex; align-items:center; gap:10px; padding:9px 2px; border-bottom:1px solid var(--line); font-size:13px; }
+.plan-item:last-of-type{ border-bottom:none; }
+.plan-dot{ width:8px;height:8px;border-radius:50%; flex:none; }
+.plan-item .t{ font-weight:700; }
+.plan-item .time{ margin-inline-start:auto; color:var(--ink-dim); font-size:12px; }
+.plan-cta{ margin-top:10px; width:100%; padding:10px; background:var(--bg); border-radius:var(--radius-sm); font-weight:700; font-size:13px; text-align:center; }
+.quote-card{ background:linear-gradient(150deg,var(--chem-dk),var(--eng-dk)); color:#fff; border-radius:var(--radius); padding:18px; text-align:center; }
+.quote-card .leaf{ font-size:24px; }
+.quote-card p{ font-size:13.5px; margin:8px 0 12px; line-height:1.9; }
+.quote-card button{ background:rgba(255,255,255,.18); color:#fff; padding:9px 14px; border-radius:999px; font-size:12.5px; font-weight:700; }
+.continue-card{ display:flex; align-items:center; gap:12px; }
+.continue-card .thumb{ width:64px;height:64px;border-radius:12px; background:var(--accent-lt); color:var(--accent); display:flex;align-items:center;justify-content:center; font-size:22px; flex:none; }
+.continue-card .info{ min-width:0; }
+.continue-card .info .lbl{ font-size:11px; color:var(--ink-dim); }
+.continue-card .info .ttl{ font-weight:700; font-size:13.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.continue-card a.go{ margin-inline-start:auto; background:var(--accent); color:#fff; font-size:12px; font-weight:700; padding:8px 12px; border-radius:999px; flex:none; }
+
+.section-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
+.section-head a.viewall{ font-size:13px; font-weight:700; color:var(--ink-dim); display:flex; align-items:center; gap:5px; }
+.vgrid{ display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:26px; }
+.vcard{ background:var(--card); border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow); }
+.vcard .thumb{ position:relative; aspect-ratio:16/10; background-size:cover; background-position:center; }
+.vcard .badge{ position:absolute; top:10px; right:10px; background:rgba(0,0,0,.55); color:#fff; font-size:11px; padding:4px 10px; border-radius:999px; }
+.vcard .play{ position:absolute; inset:0; margin:auto; width:42px;height:42px; border-radius:50%; background:rgba(255,255,255,.92); display:flex;align-items:center;justify-content:center; color:#111; }
+.vcard .body{ padding:13px 14px 15px; }
+.vcard .body h4{ font-size:14px; margin-bottom:4px; }
+.vcard .body .sub{ font-size:12px; color:var(--ink-dim); margin-bottom:10px; }
+.vcard .row{ display:flex; gap:8px; }
+.vcard .row button, .vcard .row a{ flex:1; text-align:center; font-size:12px; font-weight:700; padding:9px 6px; border-radius:10px; }
+.btn-solid{ background:var(--accent); color:#fff; }
+.btn-outline{ background:var(--accent-lt); color:var(--accent-dk); }
+
+.features{ background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); padding:22px 26px; }
+.features h2{ font-size:19px; margin-bottom:16px; }
+.fgrid{ display:grid; grid-template-columns:repeat(4,1fr); gap:18px 14px; }
+.fitem{ display:flex; flex-direction:column; align-items:center; gap:8px; text-align:center; }
+.fitem .fi{ width:46px;height:46px;border-radius:14px; background:var(--bg); display:flex;align-items:center;justify-content:center; color:var(--accent); }
+.fitem span{ font-size:12.5px; font-weight:700; color:var(--ink-dim); }
+footer.pagefoot{ display:flex; justify-content:space-between; align-items:center; margin-top:26px; font-size:12px; color:var(--ink-dim); padding-top:14px; border-top:1px solid var(--line); }
+
+.section-hero{ border-radius:var(--radius); padding:30px; margin-bottom:24px; color:#fff; display:flex; align-items:center; gap:22px; background:linear-gradient(120deg,var(--accent-dk),var(--accent)); }
+.section-hero .emoji{ width:78px;height:78px;border-radius:22px; background:rgba(255,255,255,.18); display:flex;align-items:center;justify-content:center; font-size:36px; flex:none; }
+.section-hero h1{ color:#fff; font-size:25px; }
+.section-hero .en{ opacity:.85; font-size:13px; margin-bottom:6px; }
+.section-hero .stats{ display:flex; gap:22px; margin-top:12px; }
+.section-hero .stats div b{ display:block; font-size:18px; }
+.section-hero .stats div span{ font-size:11.5px; opacity:.85; }
+.section-hero .overall{ margin-inline-start:auto; text-align:center; }
+.ring{ width:84px;height:84px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:16px; background:conic-gradient(#fff var(--p,0%), rgba(255,255,255,.25) 0); }
+.ring .in{ width:66px;height:66px; border-radius:50%; background:var(--accent-dk); display:flex; align-items:center; justify-content:center; }
+
+.unit{ background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); margin-bottom:18px; overflow:hidden; }
+.unit-head{ display:flex; align-items:center; gap:12px; padding:18px 20px; cursor:pointer; user-select:none; }
+.unit-head .num{ width:38px;height:38px; border-radius:11px; background:var(--accent-lt); color:var(--accent-dk); display:flex;align-items:center;justify-content:center; font-weight:700; flex:none; }
+.unit-head h3{ font-size:16px; }
+.unit-head .meta{ font-size:12px; color:var(--ink-dim); }
+.unit-head .chev{ margin-inline-start:auto; transition:transform .2s ease; color:var(--ink-dim); }
+.unit.open .chev{ transform:rotate(180deg); }
+.unit-body{ display:none; padding:0 20px 20px; }
+.unit.open .unit-body{ display:block; }
+.unit-progress{ padding:0 20px 14px; display:flex; align-items:center; gap:10px; font-size:12px; color:var(--ink-dim); }
+.unit-progress .pbar{ height:7px; }
+.lesson{ display:flex; gap:14px; padding:16px 0; border-top:1px solid var(--line); }
+.lesson:first-child{ border-top:none; }
+.lesson .vbox video{ width:230px; border-radius:12px; background:#000; aspect-ratio:16/9; object-fit:cover; }
+.lesson .vbox .novideo{ width:230px;aspect-ratio:16/9; border-radius:12px; background:var(--accent-lt); color:var(--accent-dk); display:flex;flex-direction:column;align-items:center;justify-content:center; font-size:12px; text-align:center; gap:6px; padding:10px; }
+.lesson .info{ flex:1; min-width:0; }
+.lesson .info h4{ font-size:15px; margin-bottom:6px; display:flex; align-items:center; gap:8px; }
+.lesson .info .summary{ font-size:13px; color:var(--ink-dim); line-height:1.9; margin-bottom:10px; }
+.lesson .actions{ display:flex; gap:8px; flex-wrap:wrap; }
+.lesson .actions a, .lesson .actions button{ font-size:12.5px; font-weight:700; padding:8px 14px; border-radius:10px; display:flex; align-items:center; gap:6px; }
+.fav-btn{ background:none; color:var(--ink-dim); border:1px solid var(--line) !important; }
+.fav-btn.active{ color:#EF4444; border-color:#EF4444 !important; }
+.done-btn{ background:var(--bg); color:var(--ink-dim); border:1px solid var(--line) !important; }
+.done-btn.active{ background:#16A34A; color:#fff; border-color:#16A34A !important; }
+.quiz-box{ background:var(--accent-lt); border-radius:var(--radius-sm); padding:16px 18px; display:flex; align-items:center; gap:14px; margin-top:4px; }
+.quiz-box .qi{ width:44px;height:44px;border-radius:12px; background:var(--accent); color:#fff; display:flex;align-items:center;justify-content:center; flex:none; }
+.quiz-box .qt{ flex:1; }
+.quiz-box .qt h4{ font-size:14px; }
+.quiz-box .qt p{ margin:2px 0 0; font-size:12px; color:var(--ink-dim); }
+.quiz-box a.go, .quiz-box button.go{ background:var(--accent); color:#fff; padding:10px 18px; border-radius:10px; font-size:13px; font-weight:700; white-space:nowrap; }
+.quiz-frame-wrap{ margin-top:14px; border-radius:12px; overflow:hidden; border:1px solid var(--line); display:none; }
+.quiz-frame-wrap.show{ display:block; }
+.quiz-frame-wrap iframe{ width:100%; height:520px; border:none; display:block; }
+
+.pagehead{ margin-bottom:20px; }
+.pagehead p{ color:var(--ink-dim); font-size:13.5px; margin-top:6px; }
+.simple-card{ background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); padding:20px; margin-bottom:16px; }
+.timetable{ display:grid; grid-template-columns:70px repeat(7,1fr); gap:6px; }
+.timetable .cell{ background:var(--bg); border-radius:10px; min-height:56px; padding:6px; font-size:11px; }
+.timetable .head{ text-align:center; font-weight:700; font-size:12.5px; background:none; }
+.timetable .time{ display:flex; align-items:center; justify-content:center; font-weight:700; color:var(--ink-dim); background:none; }
+.timetable .slot{ border-radius:8px; padding:5px 6px; color:#fff; font-size:10.5px; font-weight:700; line-height:1.4; }
+.notes-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+.note{ background:#FFF7D6; border-radius:14px; padding:14px; min-height:140px; box-shadow:var(--shadow); position:relative; }
+[data-theme="dark"] .note{ background:#3A3320; }
+.note textarea{ width:100%; height:90px; background:none; border:none; resize:none; font-family:inherit; font-size:13px; color:var(--ink); }
+.note textarea:focus{ outline:none; }
+.note .del{ position:absolute; top:8px; left:10px; background:none; color:var(--ink-dim); font-size:16px; }
+.add-note{ border:2px dashed var(--line); border-radius:14px; min-height:140px; display:flex;align-items:center;justify-content:center; flex-direction:column; gap:6px; color:var(--ink-dim); font-weight:700; font-size:13px; background:none; }
+.prog-row{ display:flex; align-items:center; gap:14px; padding:14px 0; border-top:1px solid var(--line); }
+.prog-row:first-child{ border-top:none; }
+.prog-row .ic{ width:44px;height:44px; border-radius:12px; display:flex;align-items:center;justify-content:center; color:#fff; flex:none; }
+.prog-row .name{ width:120px; font-weight:700; font-size:14px; flex:none; }
+.prog-row .pbar{ height:9px; }
+.prog-row .pct{ width:44px; text-align:left; font-weight:700; font-size:13px; }
+.fav-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:14px; }
+.fav-item{ display:flex; align-items:center; gap:12px; background:var(--card); border-radius:14px; padding:12px 14px; box-shadow:var(--shadow); }
+.fav-item .ic{ width:40px;height:40px;border-radius:11px; display:flex;align-items:center;justify-content:center; color:#fff; flex:none; }
+.fav-item .t{ flex:1; min-width:0; }
+.fav-item .t .s{ font-size:11px; color:var(--ink-dim); }
+.fav-item .t .n{ font-weight:700; font-size:13.5px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.setting-row{ display:flex; align-items:center; justify-content:space-between; padding:14px 0; border-top:1px solid var(--line); }
+.setting-row:first-child{ border-top:none; }
+.setting-row .t b{ display:block; font-size:14px; }
+.setting-row .t span{ font-size:12px; color:var(--ink-dim); }
+.switch{ width:46px; height:26px; border-radius:99px; background:var(--line); position:relative; flex:none; }
+.switch::after{ content:""; position:absolute; top:3px; right:3px; width:20px;height:20px; border-radius:50%; background:#fff; transition:.2s; box-shadow:0 1px 3px rgba(0,0,0,.3); }
+.switch.on{ background:var(--accent); }
+.switch.on::after{ right:23px; }
+.pomo-widget{ text-align:center; }
+.pomo-time{ font-family:'El Messiri',serif; font-size:38px; font-weight:700; margin:8px 0; }
+.pomo-controls{ display:flex; gap:8px; justify-content:center; }
+.pomo-controls button{ background:var(--accent); color:#fff; padding:9px 16px; border-radius:10px; font-size:12.5px; font-weight:700; }
+.pomo-controls button.alt{ background:var(--bg); color:var(--ink); }
+#toast{ position:fixed; bottom:22px; right:50%; transform:translateX(50%); background:var(--ink); color:var(--bg-soft); padding:11px 22px; border-radius:999px; font-size:13px; font-weight:700; box-shadow:var(--shadow); opacity:0; pointer-events:none; transition:opacity .25s, transform .25s; z-index:999; }
+#toast.show{ opacity:1; transform:translateX(50%) translateY(-6px); }
+
+@media (max-width:980px){
+  .app{ grid-template-columns:1fr; }
+  .sidebar{ position:fixed; z-index:50; inset-inline-start:0; top:0; height:100vh; transform:translateX(102%); transition:transform .25s ease; width:250px; }
+  .sidebar.show{ transform:translateX(0); }
+  .content-grid{ grid-template-columns:1fr; }
+  .cards4, .vgrid, .fgrid{ grid-template-columns:repeat(2,1fr); }
+  .notes-grid{ grid-template-columns:repeat(2,1fr); }
+  .fav-grid{ grid-template-columns:1fr; }
+  .menu-toggle{ display:flex !important; }
+  .lesson{ flex-direction:column; }
+  .lesson .vbox video, .lesson .vbox .novideo{ width:100%; }
+}
+.menu-toggle{ display:none; }
+@media (max-width:640px){
+  .cards4, .vgrid, .fgrid, .notes-grid{ grid-template-columns:1fr; }
+  .section-hero{ flex-direction:column; text-align:center; }
+  .section-hero .overall{ margin-inline-start:0; }
+  .timetable{ font-size:10px; }
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main">
+    <div class="topbar" id="topbar"></div>
+    <div id="page-content"></div>
+  </div>
+</div>
+<div id="toast"></div>
+
+<script>
+/* =========================================================================
+   MyStudy — ملف واحد يضم كل شيء (HTML + CSS + JS) وموجّه صفحات داخلي (SPA)
+   لتعديل المحتوى (فيديو/ملف/كويز) عدّل كائن SECTION_DATA_ALL بالأسفل.
+   ========================================================================= */
+
+/* ---------------- Icons ---------------- */
+const ICONS = {
+  home:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>`,
+  book:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2Z"/><path d="M19 19H6a2 2 0 0 1 0-4h13"/></svg>`,
+  cal:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>`,
+  chart:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-5 3 3 5-7"/></svg>`,
+  quiz:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>`,
+  note:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9Z"/><path d="M14 3v6h6"/></svg>`,
+  heart:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.8 1-1a5.5 5.5 0 0 0 0-7.8Z"/></svg>`,
+  gear:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg>`,
+  moon:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>`,
+  sun:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>`,
+  bell:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>`,
+  search:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>`,
+  download:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>`,
+  play:`<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>`,
+  check:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>`,
+  arrow:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>`,
+  flask:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2h6M10 2v6.5L4.5 18a2 2 0 0 0 1.8 3h11.4a2 2 0 0 0 1.8-3L14 8.5V2"/></svg>`,
+  langs:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h9M9 3v2c0 4.5-2.5 8-6 9.5M6 9.5c1.4 2 3.5 3.3 5.8 4"/><path d="m14 21 4-9 4 9M15.5 18h5"/></svg>`,
+  chat:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-8.9 8.4 9 9 0 0 1-3.8-.9L3 20l1.1-4.3A8.4 8.4 0 1 1 21 11.5Z"/></svg>`,
+  pulse:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>`,
+};
+function icon(name){ return ICONS[name] || ''; }
+
+/* ---------------- Storage ---------------- */
+const Store = {
+  get(k,d){ try{ const v=localStorage.getItem(k); return v===null?d:JSON.parse(v); }catch(e){ return d; } },
+  set(k,v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+};
+
+/* ---------------- Sections registry ---------------- */
+const SECTIONS = {
+  chemistry:     { title:'الكيمياء',         en:'Chemistry',            icon:'flask', color:'var(--chem)' },
+  english:       { title:'الإنجليزي',        en:'English',              icon:'langs', color:'var(--eng)'  },
+  communication: { title:'مهارات الاتصال',   en:'Communication Skills', icon:'chat',  color:'var(--comm)' },
+  medical:       { title:'المصطلحات الطبية', en:'Medical Terminology',  icon:'pulse', color:'var(--med)'  },
+};
+
+/* ---------------- Content data ----------------
+   عدّل هنا: video (مسار الفيديو في جهازك)، file (ملف الشرح)، quizForm (رابط تضمين Google Form) */
+const SECTION_DATA_ALL = {
+  chemistry: { key:'chemistry', title:'الكيمياء', en:'Chemistry', icon:'flask', tagline:'رحلة التفاعل بين المعرفة والنجاح', units:[
+    { id:'u1', title:'الروابط الكيميائية', quizForm:'https://docs.google.com/forms/d/e/PUT_YOUR_FORM_ID/viewform?embedded=true', lessons:[
+      { id:'l1', title:'الرابطة التساهمية', summary:'شرح شامل لكيفية تشارك الذرات للإلكترونات وتكوّن الروابط التساهمية الأحادية والثنائية والثلاثية مع أمثلة مباشرة.', video:'videos/chem-u1-l1.mp4', videoHint:'videos/chem-u1-l1.mp4', file:'files/chem-u1-l1.pdf' },
+      { id:'l2', title:'الرابطة الأيونية', summary:'كيف تنتقل الإلكترونات بين الفلزات واللافلزات لتكوين أيونات موجبة وسالبة، وخصائص المركبات الأيونية الناتجة.', video:'videos/chem-u1-l2.mp4', videoHint:'videos/chem-u1-l2.mp4', file:'files/chem-u1-l2.pdf' },
+      { id:'l3', title:'الرابطة الفلزية', summary:'تفسير بحر الإلكترونات في الفلزات وعلاقته بالتوصيل الكهربائي والحراري والليونة.', video:'videos/chem-u1-l3.mp4', videoHint:'videos/chem-u1-l3.mp4', file:'files/chem-u1-l3.pdf' },
+    ]},
+    { id:'u2', title:'التفاعلات الكيميائية', quizForm:'https://docs.google.com/forms/d/e/PUT_YOUR_FORM_ID/viewform?embedded=true', lessons:[
+      { id:'l1', title:'موازنة المعادلات الكيميائية', summary:'خطوات عملية لموازنة المعادلات باستخدام قانون حفظ الكتلة مع أمثلة متدرجة الصعوبة.', video:'videos/chem-u2-l1.mp4', videoHint:'videos/chem-u2-l1.mp4', file:'files/chem-u2-l1.pdf' },
+      { id:'l2', title:'أنواع التفاعلات الكيميائية', summary:'تصنيف التفاعلات إلى اتحاد وتحلل وإحلال أحادي وثنائي مع أمثلة من الحياة اليومية.', video:'videos/chem-u2-l2.mp4', videoHint:'videos/chem-u2-l2.mp4', file:'files/chem-u2-l2.pdf' },
+      { id:'l3', title:'معدل التفاعل والعوامل المؤثرة', summary:'أثر التركيز ودرجة الحرارة والعامل الحفّاز على سرعة التفاعلات الكيميائية.', video:'videos/chem-u2-l3.mp4', videoHint:'videos/chem-u2-l3.mp4', file:'files/chem-u2-l3.pdf' },
+    ]},
+    { id:'u3', title:'الكيمياء العضوية', quizForm:'https://docs.google.com/forms/d/e/PUT_YOUR_FORM_ID/viewform?embedded=true', lessons:[
+      { id:'l1', title:'الهيدروكربونات', summary:'التعرف على الألكانات والألكينات والألكاينات وطرق تسميتها وخصائصها الأساسية.', video:'videos/chem-u3-l1.mp4', videoHint:'videos/chem-u3-l1.mp4', file:'files/chem-u3-l1.pdf' },
+      { id:'l2', title:'المجموعات الوظيفية', summary:'أهم المجموعات الوظيفية العضوية مثل الكحولات والأحماض الكربوكسيلية وتأثيرها على خصائص المركب.', video:'videos/chem-u3-l2.mp4', videoHint:'videos/chem-u3-l2.mp4', file:'files/chem-u3-l2.pdf' },
+      { id:'l3', title:'البوليمرات', summary:'كيف تتكون الجزيئات الكبيرة من وحدات متكررة، وأمثلة على البوليمرات الطبيعية والصناعية.', video:'videos/chem-u3-l3.mp4', videoHint:'videos/chem-u3-l3.mp4', file:'files/chem-u3-l3.pdf' },
+    ]},
+    { id:'u4', title:'المحاليل والحسابات الكيميائية', quizForm:'https://docs.google.com/forms/d/e/PUT_YOUR_FORM_ID/viewform?embedded=true', lessons:[
+      { id:'l1', title:'التركيز المولاري', summary:'طريقة حساب التركيز المولاري للمحاليل وتطبيقاته في المسائل الكيميائية.', video:'videos/chem-u4-l1.mp4', videoHint:'videos/chem-u4-l1.mp4', file:'files/chem-u4-l1.pdf' },
+      { id:'l2', title:'التخفيف وحساباته', summary:'قانون التخفيف وكيفية تحضير محلول أقل تركيزاً من محلول أصلي بخطوات دقيقة.', video:'videos/chem-u4-l2.mp4', videoHint:'videos/chem-u4-l2.mp4', file:'files/chem-u4-l2.pdf' },
+    ]},
+  ]},
+  english: { key:'english', title:'الإنجليزي', en:'English', icon:'langs', tagline:'كل كلمة تقربك من حلمك', units:[
+    { id:'u1', title:'أساسيات القواعد (Grammar Basics)', quizForm:'https://docs.google.com/forms/d/e/PUT_YOUR_FORM_ID/viewform?embedded=true', lessons:[
+      { id:'l1', title:'قواعد الأزمنة في اللغة الإنجليزية', summary:'شرح مبسّط لأهم الأزمنة (Present, Past, Future) مع تدريبات تطبيقية متنوعة.', video:'videos/eng-u1-l1.mp4', videoHint:'videos/eng-u1-l1.mp4', file:'files/eng-u1-l1.pdf' },
+      { id:'l2', title:'المضارع البسيط مقابل الماضي البسيط', summary:'الفروقات الأساسية بين الزمنين وحالات استخدام كل منهما بأمثلة عملية.', video:'videos/eng-u1-l2.mp4', videoHint:'videos/eng-u1-l2.mp4', file:'files/eng-u1-l2.pdf' },
+      { id:'l3', title:'أفعال الحال (Modal Verbs)', summary:'استخدامات can, could, must, should وغيرها في الجمل اليومية والرسمية.', video:'videos/eng-u1-l3.mp4', videoHint:'videos/eng-u1-l3.mp4', file:'files/eng-u1-l3.pdf' },
+    ]},
+    { id:'u2', title:'بناء المفردات (Vocabulary Building)', quizForm:'https://docs.google.com/forms/d/e/PUT_YOUR_FORM_ID/viewform?embedded=true', lessons:[
+      { id:'l1', title:'المفردات الأكاديمية الشائعة', summary:'أهم الكلمات الأكاديمية التي تتكرر في النصوص والاختبارات الجامعية.', video:'videos/eng-u2-l1.mp4', videoHint:'videos/eng-u2-l1.mp4', file:'files/eng-u2-l1.pdf' },
+      { id:'l2', title:'المرادفات والأضداد', summary:'توسيع حصيلتك اللغوية عبر تعلم المرادفات والأضداد لأكثر الكلمات استخداماً.', video:'videos/eng-u2-l2.mp4', videoHint:'videos/eng-u2-l2.mp4', file:'files/eng-u2-l2.pdf' },
+      { id:'l3', title:'الكلمات المركّبة والتعابير', summary:'تعابير اصطلاحية شائعة (Idioms) تجعل حديثك أقرب للناطقين الأصليين.', video:'videos/eng-u2-l3.mp4', videoHint:'videos/eng-u2-l3.mp4', file:'files/eng-u2-l3.pdf' },
+    ]},
+    { id:'u3', title:'القراءة والكتابة (Reading & Writing)', quizForm:'https://docs.google.com/forms/d/e/PUT_YOUR_FORM_ID/viewform?embedded=true', lessons:[
+      { id:'l1', title:'مهارات الفهم القرائي', summary:'استراتيجيات لفهم النصوص الإنجليزية الطويلة واستخراج الأفكار الرئيسية بسرعة.', video:'videos/eng-u3-l1.mp4', videoHint:'videos/eng-u3-l1.mp4', file:'files/eng-u3-l1.pdf' },
+      { id:'l2', title:'كتابة الفقرة والمقال', summary:'خطوات كتابة فقرة متماسكة ومقال قصير بأسلوب أكاديمي واضح.', video:'videos/eng-u3-l2.mp4', videoHint:'videos/eng-u3-l2.mp4', file:'files/eng-u3-l2.pdf' },
+    ]},
+    { id:'u4', title:'التحدث (Speaking Practice)', quizForm:'https://docs.google.com/forms/d/e/PUT_YOUR_FORM_ID/viewform?embedded=true', lessons:[
+      { id:'l1', title:'مخارج الحروف والنطق الصحيح', summary:'تمارين نطق للأصوات التي يصعب على المتحدثين بالعربية نطقها بدقة.', video:'videos/eng-u4-l1.mp4', videoHint:'videos/eng-u4-l1.mp4', file:'files/eng-u4-l1.pdf' },
+      { id:'l2', title:'محادثات يومية شائعة', summary:'جمل وعبارات جاهزة للاستخدام في المواقف اليومية والمقابلات القصيرة.', video:'videos/eng-u4-l2.mp4', videoHint:'videos/eng-u4-l2.mp4', file:'files/eng-u4-l2.pdf' },
+    ]},
+  ]},
+  communication: { key:'communication', title:'مهارات الاتصال', en:'Communication Skills', icon:'chat', tagline:'تواصل أفضل .. فرص أكبر', units:[
+    { id:'u1', title:'أساسيات التواصل', quizForm:'https://docs.google.com/forms/d/e/PUT_YOUR_FORM_ID/viewform?embedded=true', lessons:[
+      { id:'l1', title:'التواصل الفعّال', summary:'كيف تتحدث بثقة وتوصل فكرتك بوضوح دون لبس أو تشتت للمستمع.', video:'videos/comm-u1-l1.mp4', videoHint:'videos/comm-u1-l1.mp4', file:'files/comm-u1-l1.pdf' },
+      { id:'l2', title:'لغة الجسد وتأثيرها', summary:'كيف تعكس تعابير الوجه ووضعية الجسد رسائل قوية أثناء الحديث.', video:'videos/comm-u1-l2.mp4', videoHint:'videos/comm-u1-l2.mp4', file:'files/comm-u1-l2.pdf' },
+    ]},
+    { id:'u2', title:'مهارات الاستماع', quizForm:'https://docs.google.com/forms/d/e/PUT_YOUR_FORM_ID/viewform?embedded=true', lessons:[
+      { id:'l1', title:'الاستماع الفعّال', summary:'الفرق بين السماع والاستماع الحقيقي، وتقنيات تركّز انتباهك أثناء الحوار.', video:'videos/comm-u2-l1.mp4', videoHint:'videos/comm-u2-l1.mp4', file:'files/comm-u2-l1.pdf' },
+      { id:'l2', title:'إدارة النقاش وحل الخلافات', summary:'أساليب هادئة لإدارة الحوارات الصعبة والوصول لحلول ترضي الطرفين.', video:'videos/comm-u2-l2.mp4', videoHint:'videos/comm-u2-l2.mp4', file:'files/comm-u2-l2.pdf' },
+    ]},
+    { id:'u3', title:'العرض والتقديم', quizForm:'https://docs.google.com/forms/d/e/PUT_YOUR_FORM_ID/viewform?embedded=true', lessons:[
+      { id:'l1', title:'تقديم عرض تقديمي ناجح', summary:'خطوات تحضير عرض مرتب وجذاب، من الفكرة إلى الشرائح إلى الإلقاء.', video:'videos/comm-u3-l1.mp4', videoHint:'videos/comm-u3-l1.mp4', file:'files/comm-u3-l1.pdf' },
+      { id:'l2', title:'التغلب على رهبة التحدث', summary:'تمارين عملية للتحكم في التوتر قبل وأثناء الوقوف أمام الجمهور.', video:'videos/comm-u3-l2.mp4', videoHint:'videos/comm-u3-l2.mp4', file:'files/comm-u3-l2.pdf' },
+    ]},
+    { id:'u4', title:'التواصل المهني', quizForm:'https://docs.google.com/forms/d/e/PUT_YOUR_FORM_ID/viewform?embedded=true', lessons:[
+      { id:'l1', title:'كتابة البريد الإلكتروني المهني', summary:'صياغة رسائل بريد إلكتروني واضحة ومهذبة ومناسبة لبيئة العمل.', video:'videos/comm-u4-l1.mp4', videoHint:'videos/comm-u4-l1.mp4', file:'files/comm-u4-l1.pdf' },
+      { id:'l2', title:'مهارات المقابلة الشخصية', summary:'كيف تجيب عن أسئلة المقابلة بثقة وتترك انطباعاً مهنياً قوياً.', video:'videos/comm-u4-l2.mp4', videoHint:'videos/comm-u4-l2.mp4', file:'files/comm-u4-l2.pdf' },
+    ]},
+  ]},
+  medical: { key:'medical', title:'المصطلحات الطبية', en:'Medical Terminology', icon:'pulse', tagline:'لغة الطب .. مفتاحك للمستقبل', units:[
+    { id:'u1', title:'المصطلحات الأساسية', quizForm:'https://docs.google.com/forms/d/e/PUT_YOUR_FORM_ID/viewform?embedded=true', lessons:[
+      { id:'l1', title:'البادئات واللواحق الطبية', summary:'أهم البادئات واللواحق التي تتكرر في المصطلحات الطبية وكيفية تفكيك أي مصطلح جديد.', video:'videos/med-u1-l1.mp4', videoHint:'videos/med-u1-l1.mp4', file:'files/med-u1-l1.pdf' },
+      { id:'l2', title:'الجذور الطبية الشائعة', summary:'تعلم أكثر الجذور اللاتينية واليونانية استخداماً في المصطلحات الطبية.', video:'videos/med-u1-l2.mp4', videoHint:'videos/med-u1-l2.mp4', file:'files/med-u1-l2.pdf' },
+      { id:'l3', title:'مصطلحات الاتجاهات التشريحية', summary:'المصطلحات المستخدمة لوصف مواقع واتجاهات أعضاء الجسم.', video:'videos/med-u1-l3.mp4', videoHint:'videos/med-u1-l3.mp4', file:'files/med-u1-l3.pdf' },
+    ]},
+    { id:'u2', title:'أجهزة الجسم', quizForm:'https://docs.google.com/forms/d/e/PUT_YOUR_FORM_ID/viewform?embedded=true', lessons:[
+      { id:'l1', title:'الجهاز التنفسي', summary:'المصطلحات الأساسية المتعلقة بأعضاء ووظائف الجهاز التنفسي.', video:'videos/med-u2-l1.mp4', videoHint:'videos/med-u2-l1.mp4', file:'files/med-u2-l1.pdf' },
+      { id:'l2', title:'الجهاز الدوري', summary:'مصطلحات القلب والأوعية الدموية وأهم الحالات المرتبطة بها.', video:'videos/med-u2-l2.mp4', videoHint:'videos/med-u2-l2.mp4', file:'files/med-u2-l2.pdf' },
+    ]},
+    { id:'u3', title:'الأمراض والتشخيص', quizForm:'https://docs.google.com/forms/d/e/PUT_YOUR_FORM_ID/viewform?embedded=true', lessons:[
+      { id:'l1', title:'مصطلحات الأمراض الشائعة', summary:'أسماء ولواحق تدل على الالتهابات والأورام والحالات المرضية الشائعة.', video:'videos/med-u3-l1.mp4', videoHint:'videos/med-u3-l1.mp4', file:'files/med-u3-l1.pdf' },
+      { id:'l2', title:'مصطلحات الفحوصات الطبية', summary:'أهم مصطلحات الفحوصات والأشعة والتحاليل المخبرية الشائعة.', video:'videos/med-u3-l2.mp4', videoHint:'videos/med-u3-l2.mp4', file:'files/med-u3-l2.pdf' },
+    ]},
+    { id:'u4', title:'الأدوية والعلاج', quizForm:'https://docs.google.com/forms/d/e/PUT_YOUR_FORM_ID/viewform?embedded=true', lessons:[
+      { id:'l1', title:'مصطلحات الأدوية', summary:'التصنيفات الشائعة للأدوية ولواحقها الدالة على نوع الدواء.', video:'videos/med-u4-l1.mp4', videoHint:'videos/med-u4-l1.mp4', file:'files/med-u4-l1.pdf' },
+      { id:'l2', title:'الإجراءات العلاجية', summary:'مصطلحات العمليات والإجراءات العلاجية الشائعة في المستشفيات.', video:'videos/med-u4-l2.mp4', videoHint:'videos/med-u4-l2.mp4', file:'files/med-u4-l2.pdf' },
+    ]},
+  ]},
+};
+
+/* derived indexes used by home/favorites/quizzes/progress views */
+const UNIT_TITLES = {};
+const LESSON_TITLES = {};
+const DATA_SUMMARY = {};
+Object.values(SECTION_DATA_ALL).forEach(D=>{
+  UNIT_TITLES[D.key] = {};
+  let lessons=0;
+  D.units.forEach(u=>{
+    UNIT_TITLES[D.key][u.id] = u.title;
+    u.lessons.forEach(l=>{ LESSON_TITLES[D.key+':'+u.id+':'+l.id] = l.title; lessons++; });
+  });
+  DATA_SUMMARY[D.key] = { units:D.units.length, lessons, quizzes:D.units.length };
+});
+
+/* ---------------- Progress helpers ---------------- */
+function sectionProgress(key){
+  const done = Store.get('ms_done', {});
+  const quiz = Store.get('ms_quiz', {});
+  const total = DATA_SUMMARY[key].lessons + DATA_SUMMARY[key].quizzes;
+  let got = 0;
+  Object.keys(done).forEach(k=>{ if(k.startsWith(key+':') && done[k]) got++; });
+  Object.keys(quiz).forEach(k=>{ if(k.startsWith(key+':') && quiz[k]) got++; });
+  return Math.min(100, Math.round((got/total)*100));
+}
+function overallProgress(){
+  const keys = Object.keys(SECTIONS);
+  return Math.round(keys.reduce((a,k)=>a+sectionProgress(k),0)/keys.length);
+}
+
+/* ---------------- Theme ---------------- */
+function applyTheme(){ document.body.setAttribute('data-theme', Store.get('ms_theme','light')); }
+function toggleTheme(){ Store.set('ms_theme', Store.get('ms_theme','light')==='light'?'dark':'light'); applyTheme(); }
+
+/* ---------------- Toast ---------------- */
+function toast(msg){
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(window.__toastTimer);
+  window.__toastTimer = setTimeout(()=>el.classList.remove('show'), 2200);
+}
+
+/* ---------------- Quotes ---------------- */
+const QUOTES = [
+  'كل صفحة تقرأها اليوم هي خطوة أقرب لحلمك غداً.',
+  'النجاح مجموع مجهودات صغيرة تتكرر يوماً بعد يوم.',
+  'لا تقارن يومك الأول بيوم غيرك المئة، استمر فقط.',
+  'التفوق ليس صدفة .. بل عادة يومية تبنيها بنفسك.',
+  'ذاكر بذكاء لا بجهد فقط، وخذ قسطاً من الراحة.',
+];
+function randomQuote(){ return QUOTES[Math.floor(Math.random()*QUOTES.length)]; }
+
+/* ---------------- Navigation (hash router) ---------------- */
+function go(route){ location.hash = '#/'+route; }
+
+const NAV_LINKS = [
+  ['', 'home', 'الرئيسية'],
+  ['sections', 'book', 'المواد الدراسية'],
+  ['schedule', 'cal', 'جدولي الدراسي'],
+  ['progress', 'chart', 'متابعة التقدم'],
+  ['quizzes', 'quiz', 'الكويزات'],
+  ['notes', 'note', 'الملاحظات'],
+  ['favorites', 'heart', 'المفضلة'],
+  ['settings', 'gear', 'الإعدادات'],
+];
+
+function renderSidebar(activeRoute){
+  const navHtml = NAV_LINKS.map(([r,ic,label])=>{
+    const isActive = activeRoute === (r||'home');
+    return `<a href="#/${r}" class="${isActive?'active':''}">${icon(ic)}<span>${label}</span></a>`;
+  }).join('');
+  document.getElementById('sidebar').innerHTML = `
+  <div class="brand">
+    <div class="mark">M</div>
+    <div><div class="name">MyStudy</div><div class="tag">خطوتك نحو مستقبل أفضل</div></div>
+  </div>
+  <div class="who">
+    <div class="avatar">ي</div>
+    <div><div class="hi">مرحباً بك</div><div class="uname">طالب/ة مجتهد/ة 🌱</div></div>
+  </div>
+  <nav class="mainnav">${navHtml}</nav>
+  <div class="nav-sep"></div>
+  <div class="grow-card"><div class="leaf">🌿</div>كن أفضل من نفسك أمس<br>كل يوم خطوة للأمام تصنع فرقاً كبيراً 💜</div>`;
+}
+
+const SEARCH_INDEX = [
+  {t:'الرابطة التساهمية', s:'chemistry'},
+  {t:'قواعد الأزمنة في اللغة الإنجليزية', s:'english'},
+  {t:'التواصل الفعّال', s:'communication'},
+  {t:'الجهاز التنفسي - المصطلحات', s:'medical'},
+];
+
+function renderTopbar(){
+  const t = Store.get('ms_theme','light');
+  document.getElementById('topbar').innerHTML = `
+    <button class="icon-btn menu-toggle" id="menuToggle" aria-label="القائمة">${icon('arrow')}</button>
+    <div class="search">${icon('search')}<input id="globalSearch" type="text" placeholder="ابحث عن أي درس أو موضوع..."></div>
+    <button class="icon-btn" id="themeBtn" aria-label="تبديل الوضع">${icon(t==='dark'?'sun':'moon')}</button>
+    <button class="icon-btn" id="bellBtn" aria-label="الإشعارات">${icon('bell')}<span class="dot"></span></button>`;
+
+  document.getElementById('themeBtn').addEventListener('click', ()=>{ toggleTheme(); document.getElementById('themeBtn').innerHTML = icon(Store.get('ms_theme','light')==='dark'?'sun':'moon'); });
+  document.getElementById('bellBtn').addEventListener('click', ()=> go('schedule'));
+  document.getElementById('menuToggle').addEventListener('click', ()=> document.getElementById('sidebar').classList.toggle('show'));
+
+  const input = document.getElementById('globalSearch');
+  let box;
+  input.addEventListener('input', ()=>{
+    const q = input.value.trim();
+    if(box) box.remove();
+    if(!q) return;
+    const results = SEARCH_INDEX.filter(r=>r.t.includes(q) || SECTIONS[r.s].title.includes(q));
+    box = document.createElement('div');
+    box.style.cssText = 'position:absolute;margin-top:52px;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);width:min(420px,90vw);z-index:40;overflow:hidden;';
+    box.innerHTML = results.length ? results.map(r=>`<a href="#/${r.s}" style="display:block;padding:12px 16px;font-size:13.5px;border-bottom:1px solid var(--line);color:var(--ink)">${r.t} <span style="color:var(--ink-dim);font-size:11px">— ${SECTIONS[r.s].title}</span></a>`).join('') : `<div style="padding:14px 16px;font-size:13px;color:var(--ink-dim)">لا توجد نتائج مطابقة</div>`;
+    input.closest('.search').appendChild(box);
+  });
+  document.addEventListener('click', (e)=>{ if(box && !e.target.closest('.search')){ box.remove(); box=null; } });
+}
+
+/* ================= HOME ================= */
+const LATEST = [
+  {sec:'chemistry', title:'الرابطة التساهمية', sub:'شرح شامل مع أمثلة'},
+  {sec:'english', title:'قواعد الأزمنة في اللغة الإنجليزية', sub:'شرح مبسّط مع تدريبات'},
+  {sec:'communication', title:'التواصل الفعّال', sub:'كيف تتحدث بثقة؟'},
+  {sec:'medical', title:'الجهاز التنفسي', sub:'المصطلحات الأساسية'},
+];
+const FEATURES = [
+  ['moon','وضع مظلم لراحة العين'], ['chart','إحصائيات تقدم تفصيلية'], ['home','واجهة سهلة وسلسة'],
+  ['download','تحميل سريع لكل الملفات'], ['bell','تذكير بمواعيد المذاكرة'], ['cal','خطة دراسية منظمة'],
+  ['quiz','فيديو + ملخص + كويز لكل درس'], ['check','حفظ تقدمك تلقائياً في متصفحك'], ['heart','مفضلة لحفظ أهم الدروس'],
+  ['note','ملاحظات سريعة لكل درس'], ['timer','مؤقت بومودورو للتركيز'], ['play','أكمل آخر فيديو شاهدته تلقائياً'],
+  ['search','بحث فوري في كل المحتوى'], ['book','محتوى متكامل بأربع مواد'],
+];
+const TODAY = [
+  {c:'var(--chem)', t:'كيمياء', time:'12:00 - 10:00 ص'}, {c:'var(--eng)', t:'إنجليزي', time:'2:30 - 1:00 م'},
+  {c:'var(--comm)', t:'مهارات الاتصال', time:'5:30 - 4:00 م'}, {c:'var(--med)', t:'مصطلحات طبية', time:'8:30 - 7:00 م'},
+];
+
+function renderHome(scrollToSections){
+  const cardsHtml = Object.entries(SECTIONS).map(([key,s])=>{
+    const d = DATA_SUMMARY[key], p = sectionProgress(key);
+    return `<div class="scard" style="--c:${s.color}">
+      <div class="icon">${icon(s.icon)}</div>
+      <h3>${s.title}</h3><div class="en">${s.en}</div>
+      <div class="stats"><div><b>${d.quizzes}</b>كويزات</div><div><b>${d.lessons}</b>درس</div><div><b>${d.units}</b>وحدات</div></div>
+      <div class="progress-row"><span>${p}%</span><div class="pbar"><span style="width:${p}%"></span></div></div>
+      <a class="enter" href="#/${key}">دخول القسم ${icon('arrow')}</a>
+    </div>`;
+  }).join('');
+
+  const latestHtml = LATEST.map(v=>{
+    const s = SECTIONS[v.sec];
+    return `<div class="vcard">
+      <div class="thumb" style="background:linear-gradient(160deg, ${s.color}, transparent 120%), ${s.color}22">
+        <span class="badge">${s.title}</span><div class="play">${icon('play')}</div>
+      </div>
+      <div class="body"><h4>${v.title}</h4><div class="sub">${v.sub}</div>
+        <div class="row"><a class="btn-solid" href="#/${v.sec}">${icon('download')} ملخص الملف</a></div>
+        <div class="row" style="margin-top:8px"><a class="btn-outline" href="#/${v.sec}">${icon('quiz')} فتح الكويز</a></div>
+      </div></div>`;
+  }).join('');
+
+  const featuresHtml = FEATURES.map(([ic,l])=>`<div class="fitem"><div class="fi">${icon(ic)}</div><span>${l}</span></div>`).join('');
+  const planHtml = TODAY.map(x=>`<div class="plan-item"><span class="plan-dot" style="background:${x.c}"></span><span class="t">${x.t}</span><span class="time">${x.time}</span></div>`).join('');
+
+  const last = Store.get('ms_lastlesson', null);
+  const continueHtml = last ? `
+    <div class="widget"><h4>أكمل من حيث توقفت</h4>
+      <div class="continue-card"><div class="thumb">▶</div>
+        <div class="info"><div class="lbl">${SECTIONS[last.section].title}</div><div class="ttl">${last.title}</div></div>
+        <a class="go" href="#/${last.section}">متابعة</a>
+      </div>
+    </div>` : '';
+
+  document.getElementById('page-content').innerHTML = `
+    <div class="hero"><div class="htext">
+      <h1>أهلاً بك في موقعك الدراسي</h1>
+      <p>هنا تبدأ رحلتك نحو التفوق .. كل ما تحتاجه في مكان واحد ✨<br>"الأحلام لا تتحقق بالصدفة، بل بالاجتهاد اليومي"</p>
+    </div></div>
+    <div class="content-grid">
+      <div>
+        <div class="cards4" id="sections">${cardsHtml}</div>
+        <div class="section-head"><h2>آخر المحتوى المضاف</h2><a class="viewall" href="#sections">عرض الكل</a></div>
+        <div class="vgrid">${latestHtml}</div>
+        <div class="features"><h2>مميزات الموقع</h2><div class="fgrid">${featuresHtml}</div></div>
+      </div>
+      <div class="rightcol">
+        <div class="widget"><h4>أدوات سريعة</h4>
+          <div class="tool-list">
+            <a href="#/schedule">الجدول الدراسي</a>
+            <a href="#/progress">متابعة التقدم</a>
+            <a href="#/quizzes">الكويزات</a>
+            <a href="#/notes">الملاحظات</a>
+            <a href="#/favorites">المفضلة</a>
+            <button class="tool" id="pomoOpen">مؤقت بومودورو</button>
+          </div>
+        </div>
+        ${continueHtml}
+        <div class="widget"><h4>مخطط اليوم</h4><div>${planHtml}</div><a class="plan-cta" href="#/schedule">عرض الجدول الكامل</a></div>
+        <div class="quote-card"><div class="leaf">🌱</div><p id="quoteText">${randomQuote()}</p><button id="newQuoteBtn">أنت قادر على التحقيق</button></div>
+      </div>
+    </div>
+    <footer class="pagefoot"><span>Study Smart • Achieve More 💜</span><span>MyStudy © 2026 — معك في كل خطوة</span></footer>`;
+
+  document.getElementById('newQuoteBtn').addEventListener('click', ()=> document.getElementById('quoteText').textContent = randomQuote());
+  document.getElementById('pomoOpen').addEventListener('click', ()=> go('schedule/pomodoro'));
+  if(scrollToSections){ setTimeout(()=> document.getElementById('sections').scrollIntoView({behavior:'smooth'}), 100); }
+}
+
+/* ================= SECTION PAGE ================= */
+function renderSectionPage(key, unitId){
+  const D = SECTION_DATA_ALL[key];
+  document.body.setAttribute('data-section', key);
+
+  const done = Store.get('ms_done', {});
+  const quiz = Store.get('ms_quiz', {});
+  const totalLessons = D.units.reduce((a,u)=>a+u.lessons.length,0);
+  const totalQuiz = D.units.length;
+  let gotL=0, gotQ=0;
+  D.units.forEach(u=>{ u.lessons.forEach(l=>{ if(done[key+':'+u.id+':'+l.id]) gotL++; }); if(quiz[key+':'+u.id]) gotQ++; });
+  const pct = Math.round(((gotL+gotQ)/(totalLessons+totalQuiz))*100) || 0;
+
+  const heroHtml = `
+  <div class="section-hero">
+    <div class="emoji">${icon(D.icon)}</div>
+    <div><div class="en">${D.en}</div><h1>${D.title}</h1><p style="opacity:.9;font-size:13px;margin-top:4px">${D.tagline}</p>
+      <div class="stats"><div><b>${D.units.length}</b><span>وحدات</span></div><div><b>${totalLessons}</b><span>دروس</span></div><div><b>${totalQuiz}</b><span>كويزات</span></div></div>
+    </div>
+    <div class="overall"><div class="ring" style="--p:${pct}%"><div class="in">${pct}%</div></div><div style="font-size:11px;margin-top:6px;opacity:.9">تقدمك بالقسم</div></div>
+  </div>`;
+
+  const unitsHtml = D.units.map((u,idx)=>{
+    const doneCount = u.lessons.filter(l=>done[key+':'+u.id+':'+l.id]).length;
+    const qDone = quiz[key+':'+u.id];
+    const unitPct = Math.min(100, Math.round((doneCount/(u.lessons.length+1))*100) + (qDone ? Math.round(100/(u.lessons.length+1)) : 0));
+    const lessonsHtml = u.lessons.map(l=>{
+      const lkey = `${key}:${u.id}:${l.id}`;
+      const isFav = Store.get('ms_fav', {})[lkey];
+      const isDone = done[lkey];
+      return `
+      <div class="lesson">
+        <div class="vbox">${l.video
+          ? `<video controls data-key="${lkey}" data-section="${key}" data-title="${l.title}" src="${l.video}"></video>`
+          : `<div class="novideo">${icon('play')}<span>ضع رابط الفيديو من جهازك هنا<br>(${l.videoHint})</span></div>`}</div>
+        <div class="info">
+          <h4>${l.title}</h4>
+          <div class="summary">${l.summary}</div>
+          <div class="actions">
+            <a class="btn-outline" href="${l.file}" download>${icon('download')} تحميل ملف الشرح</a>
+            <button class="fav-btn ${isFav?'active':''}" data-key="${lkey}">${icon('heart')} ${isFav?'في المفضلة':'أضف للمفضلة'}</button>
+            <button class="done-btn ${isDone?'active':''}" data-key="${lkey}">${isDone? icon('check')+' مكتمل':'وضع علامة: مكتمل'}</button>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+
+    return `
+    <div class="unit" id="unit-${u.id}">
+      <div class="unit-head">
+        <div class="num">${idx+1}</div>
+        <div><h3>${u.title}</h3><div class="meta">${u.lessons.length} دروس + كويز الوحدة</div></div>
+        <div class="chev">${icon('arrow')}</div>
+      </div>
+      <div class="unit-progress"><span>${unitPct}%</span><div class="pbar"><span style="width:${unitPct}%"></span></div></div>
+      <div class="unit-body">
+        ${lessonsHtml}
+        <div class="quiz-box">
+          <div class="qi">${icon('quiz')}</div>
+          <div class="qt"><h4>كويز: ${u.title}</h4><p>اختبر فهمك للوحدة عبر النموذج التفاعلي بدون مغادرة الموقع</p></div>
+          <button class="go quiz-toggle" data-unit="${u.id}" data-form="${u.quizForm}">فتح الكويز</button>
+        </div>
+        <div class="quiz-frame-wrap" id="frame-${u.id}"><iframe loading="lazy" title="كويز ${u.title}"></iframe></div>
+        <div style="margin-top:10px;text-align:left">
+          <button class="quiz-done done-btn ${qDone?'active':''}" data-key="${key}:${u.id}" style="display:inline-block">${qDone? icon('check')+' تم إنجاز الكويز':'وضع علامة: تم إنجاز الكويز'}</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('page-content').innerHTML = heroHtml + `<div id="unitsWrap">${unitsHtml}</div>`;
+  wireSectionEvents(key, D, unitId);
+}
+
+function wireSectionEvents(key, D, unitId){
+  document.querySelectorAll('.unit-head').forEach(h=> h.addEventListener('click', ()=> h.closest('.unit').classList.toggle('open')));
+
+  document.querySelectorAll('.fav-btn').forEach(b=>{
+    b.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      const k = b.dataset.key;
+      const fav = Store.get('ms_fav', {});
+      fav[k] = !fav[k]; Store.set('ms_fav', fav);
+      b.classList.toggle('active');
+      b.innerHTML = icon('heart')+' '+(fav[k] ? 'في المفضلة':'أضف للمفضلة');
+      toast(fav[k] ? 'أُضيف إلى المفضلة ❤️' : 'أُزيل من المفضلة');
+    });
+  });
+
+  document.querySelectorAll('.done-btn:not(.quiz-done)').forEach(b=>{
+    b.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      const k = b.dataset.key;
+      const done = Store.get('ms_done', {});
+      done[k] = !done[k]; Store.set('ms_done', done);
+      b.classList.toggle('active');
+      b.innerHTML = done[k] ? icon('check')+' مكتمل' : 'وضع علامة: مكتمل';
+      toast(done[k] ? 'أحسنت! تم إنجاز الدرس 🎉' : 'تم إلغاء علامة الإنجاز');
+      renderSectionPage(key, unitId);
+    });
+  });
+
+  document.querySelectorAll('.quiz-toggle').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      const frame = document.getElementById('frame-'+b.dataset.unit);
+      frame.classList.toggle('show');
+      if(frame.classList.contains('show') && !frame.dataset.loaded){
+        frame.querySelector('iframe').src = b.dataset.form;
+        frame.dataset.loaded = '1';
+      }
+    });
+  });
+
+  document.querySelectorAll('.quiz-done').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      const k = b.dataset.key;
+      const q = Store.get('ms_quiz', {});
+      q[k] = !q[k]; Store.set('ms_quiz', q);
+      toast(q[k] ? 'أحسنت! تم تسجيل إنجاز الكويز 🎉' : 'تم إلغاء علامة الإنجاز');
+      renderSectionPage(key, unitId);
+    });
+  });
+
+  document.querySelectorAll('video[data-key]').forEach(v=>{
+    const k = v.dataset.key;
+    const pos = Store.get('ms_video_pos', {});
+    if(pos[k]) v.currentTime = pos[k];
+    v.addEventListener('timeupdate', ()=>{ const p=Store.get('ms_video_pos',{}); p[k]=v.currentTime; Store.set('ms_video_pos',p); });
+    v.addEventListener('play', ()=> Store.set('ms_lastlesson', { section: v.dataset.section, title: v.dataset.title }));
+  });
+
+  const target = unitId && document.getElementById('unit-'+unitId);
+  if(target){ target.classList.add('open'); setTimeout(()=> target.scrollIntoView({behavior:'smooth', block:'start'}), 150); }
+  else { const first = document.querySelector('.unit'); if(first) first.classList.add('open'); }
+}
+
+/* ================= SCHEDULE ================= */
+const DAYS = ['السبت','الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة'];
+const TIMES = ['9ص','12ظ','3م','6م'];
+const PLAN = [
+  [ {sec:'chemistry',l:'كيمياء'}, null, {sec:'english',l:'إنجليزي'}, null, {sec:'chemistry',l:'كيمياء'}, null, null ],
+  [ null, {sec:'communication',l:'اتصال'}, null, {sec:'medical',l:'طبية'}, null, {sec:'communication',l:'اتصال'}, null ],
+  [ {sec:'english',l:'إنجليزي'}, null, {sec:'chemistry',l:'كيمياء'}, null, {sec:'english',l:'إنجليزي'}, null, null ],
+  [ null, {sec:'medical',l:'طبية'}, null, {sec:'communication',l:'اتصال'}, null, {sec:'medical',l:'طبية'}, null ],
+];
+let pomoSeconds=25*60, pomoRunning=false, pomoInterval=null, pomoFocus=true;
+
+function renderSchedule(openPomo){
+  document.body.removeAttribute('data-section');
+  let tt = `<div class="cell head"></div>` + DAYS.map(d=>`<div class="cell head">${d}</div>`).join('');
+  TIMES.forEach((t,ti)=>{
+    tt += `<div class="cell time">${t}</div>`;
+    DAYS.forEach((d,di)=>{
+      const item = PLAN[ti][di];
+      if(item){
+        const varName = {chemistry:'chem',english:'eng',communication:'comm',medical:'med'}[item.sec];
+        tt += `<div class="cell" style="padding:4px"><div class="slot" style="background:var(--${varName})">${item.l}</div></div>`;
+      } else tt += `<div class="cell"></div>`;
+    });
+  });
+
+  document.getElementById('page-content').innerHTML = `
+    <div class="pagehead"><h1>جدولي الدراسي</h1><p>نظّم أسبوعك الدراسي بحيث تخصص وقتاً لكل مادة، والتزم بالتوقيت قدر الإمكان.</p></div>
+    <div class="simple-card"><h3 style="margin-bottom:14px">الخطة الأسبوعية</h3><div class="timetable">${tt}</div></div>
+    <div class="simple-card" id="pomodoro" style="max-width:360px">
+      <h3 style="margin-bottom:6px">مؤقت بومودورو</h3>
+      <p style="color:var(--ink-dim);font-size:12.5px;margin-bottom:10px">25 دقيقة تركيز، ثم 5 دقائق راحة — كرر الدورة لزيادة إنتاجيتك.</p>
+      <div class="pomo-widget">
+        <div id="pomoLabel" style="font-size:12.5px;color:var(--ink-dim)">وقت التركيز</div>
+        <div class="pomo-time" id="pomoTime">25:00</div>
+        <div class="pomo-controls"><button id="pomoStart">ابدأ</button><button class="alt" id="pomoReset">إعادة ضبط</button></div>
+      </div>
+    </div>`;
+
+  pomoRender();
+  document.getElementById('pomoStart').addEventListener('click', (e)=>{
+    pomoRunning = !pomoRunning;
+    e.target.textContent = pomoRunning ? 'إيقاف مؤقت' : 'ابدأ';
+    if(pomoRunning){
+      pomoInterval = setInterval(()=>{
+        pomoSeconds--;
+        if(pomoSeconds<0){ pomoFocus=!pomoFocus; pomoSeconds = pomoFocus?25*60:5*60; toast(pomoFocus?'انتهت الراحة! ارجع للتركيز 💪':'وقت راحة قصيرة ☕'); }
+        pomoRender();
+      }, 1000);
+    } else clearInterval(pomoInterval);
+  });
+  document.getElementById('pomoReset').addEventListener('click', ()=>{
+    clearInterval(pomoInterval); pomoRunning=false; pomoFocus=true; pomoSeconds=25*60;
+    document.getElementById('pomoStart').textContent='ابدأ'; pomoRender();
+  });
+  if(openPomo){ setTimeout(()=> document.getElementById('pomodoro').scrollIntoView({behavior:'smooth'}), 100); }
+}
+function pomoRender(){
+  const m = String(Math.floor(pomoSeconds/60)).padStart(2,'0');
+  const s = String(pomoSeconds%60).padStart(2,'0');
+  document.getElementById('pomoTime').textContent = `${m}:${s}`;
+  document.getElementById('pomoLabel').textContent = pomoFocus ? 'وقت التركيز' : 'وقت الراحة';
+}
+
+/* ================= PROGRESS ================= */
+function renderProgressPage(){
+  document.body.removeAttribute('data-section');
+  const overall = overallProgress();
+  const rows = Object.entries(SECTIONS).map(([key,s])=>{
+    const p = sectionProgress(key);
+    return `<div class="prog-row"><div class="ic" style="background:${s.color}">${icon(s.icon)}</div><div class="name">${s.title}</div>
+      <div class="pbar" style="flex:1"><span style="width:${p}%;background:${s.color}"></span></div><div class="pct">${p}%</div></div>`;
+  }).join('');
+  document.getElementById('page-content').innerHTML = `
+    <div class="pagehead"><h1>متابعة التقدم</h1><p>تابع نسبة إنجازك في كل مادة، واستمر حتى تصل لـ 100% في الجميع.</p></div>
+    <div class="simple-card"><div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap">
+      <div class="ring" style="width:110px;height:110px;background:conic-gradient(var(--chem) ${overall}%, var(--line) 0)">
+        <div class="in" style="width:88px;height:88px;background:var(--bg-soft);color:var(--ink)">${overall}%</div>
+      </div>
+      <div><h3>تقدمك العام</h3><p style="color:var(--ink-dim);font-size:13px;margin-top:4px">هذه النسبة تجمع تقدمك في جميع الأقسام الأربعة</p></div>
+    </div></div>
+    <div class="simple-card"><h3 style="margin-bottom:6px">التقدم حسب المادة</h3>${rows}</div>`;
+}
+
+/* ================= QUIZZES ================= */
+function renderQuizzesPage(){
+  document.body.removeAttribute('data-section');
+  const quizDone = Store.get('ms_quiz', {});
+  let html = '';
+  Object.entries(SECTIONS).forEach(([key,s])=>{
+    html += `<h3 style="margin:18px 0 10px;color:${s.color}">${s.title}</h3>`;
+    Object.entries(UNIT_TITLES[key]).forEach(([uid,utitle])=>{
+      const d = quizDone[key+':'+uid];
+      html += `<div class="quiz-box" style="background:var(--bg);margin-bottom:10px">
+        <div class="qi" style="background:${s.color}">${icon('quiz')}</div>
+        <div class="qt"><h4>${utitle}</h4><p>${d?'تم إنجاز هذا الكويز ✅':'لم يُنجز بعد'}</p></div>
+        <a class="go" href="#/${key}/${uid}" style="background:${s.color}">فتح الكويز</a>
+      </div>`;
+    });
+  });
+  document.getElementById('page-content').innerHTML = `
+    <div class="pagehead"><h1>الكويزات</h1><p>كل كويزات الوحدات في مكان واحد — افتح أي كويز من داخل قسمه مباشرة.</p></div>
+    <div class="simple-card">${html}</div>`;
+}
+
+/* ================= FAVORITES ================= */
+function renderFavoritesPage(){
+  document.body.removeAttribute('data-section');
+  const fav = Store.get('ms_fav', {});
+  const keys = Object.keys(fav).filter(k=>fav[k]);
+  let body;
+  if(!keys.length){
+    body = `<div class="simple-card" style="text-align:center;color:var(--ink-dim)">${icon('heart')}<p style="margin-top:10px">لا توجد دروس في المفضلة بعد — اضغط "أضف للمفضلة" داخل أي درس.</p></div>`;
+  } else {
+    body = `<div class="fav-grid">` + keys.map(k=>{
+      const [sec, uid] = k.split(':');
+      const s = SECTIONS[sec];
+      return `<a class="fav-item" href="#/${sec}/${uid}">
+        <div class="ic" style="background:${s.color}">${icon(s.icon)}</div>
+        <div class="t"><div class="s">${s.title}</div><div class="n">${LESSON_TITLES[k]||k}</div></div>
+        ${icon('arrow')}</a>`;
+    }).join('') + `</div>`;
+  }
+  document.getElementById('page-content').innerHTML = `
+    <div class="pagehead"><h1>المفضلة</h1><p>الدروس التي حفظتها لمراجعتها لاحقاً بسهولة.</p></div>${body}`;
+}
+
+/* ================= NOTES ================= */
+function renderNotesPage(){
+  document.body.removeAttribute('data-section');
+  document.getElementById('page-content').innerHTML = `
+    <div class="pagehead"><h1>الملاحظات</h1><p>دوّن أي فكرة أو ملاحظة سريعة أثناء المذاكرة — تُحفظ تلقائياً في متصفحك.</p></div>
+    <div class="notes-grid" id="notesGrid"></div>`;
+  renderNotesGrid();
+}
+function renderNotesGrid(){
+  const notes = Store.get('ms_notes', []);
+  const grid = document.getElementById('notesGrid');
+  grid.innerHTML = notes.map(n=>`
+    <div class="note" data-id="${n.id}"><textarea placeholder="اكتب ملاحظتك هنا...">${n.text}</textarea><button class="del" aria-label="حذف">✕</button></div>
+  `).join('') + `<button class="add-note" id="addNote">+ ملاحظة جديدة</button>`;
+
+  grid.querySelectorAll('.note textarea').forEach(ta=>{
+    ta.addEventListener('input', ()=>{
+      const id = ta.closest('.note').dataset.id;
+      const list = Store.get('ms_notes', []);
+      const n = list.find(x=>String(x.id)===id);
+      if(n){ n.text = ta.value; Store.set('ms_notes', list); }
+    });
+  });
+  grid.querySelectorAll('.note .del').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      const id = b.closest('.note').dataset.id;
+      Store.set('ms_notes', Store.get('ms_notes', []).filter(x=>String(x.id)!==id));
+      renderNotesGrid(); toast('تم حذف الملاحظة');
+    });
+  });
+  document.getElementById('addNote').addEventListener('click', ()=>{
+    const list = Store.get('ms_notes', []);
+    list.push({ id: Date.now(), text:'' });
+    Store.set('ms_notes', list);
+    renderNotesGrid();
+    const areas = grid.querySelectorAll('textarea');
+    if(areas.length) areas[areas.length-1].focus();
+  });
+}
+
+/* ================= SETTINGS ================= */
+function renderSettingsPage(){
+  document.body.removeAttribute('data-section');
+  document.getElementById('page-content').innerHTML = `
+    <div class="pagehead"><h1>الإعدادات</h1><p>خصّص تجربتك داخل الموقع.</p></div>
+    <div class="simple-card">
+      <div class="setting-row"><div class="t"><b>الوضع الليلي</b><span>مريح أكثر للعين أثناء المذاكرة الليلية</span></div><div class="switch" id="darkSwitch"></div></div>
+      <div class="setting-row"><div class="t"><b>تذكيرات المذاكرة</b><span>تنبيه بمواعيد جدولك الدراسي (تجريبي)</span></div><div class="switch" id="remindSwitch"></div></div>
+    </div>
+    <div class="simple-card"><div class="setting-row"><div class="t"><b>إعادة ضبط التقدم</b><span>يمسح كل علامات الإنجاز، المفضلة، والملاحظات</span></div>
+      <button id="resetBtn" style="background:#EF4444;color:#fff;padding:9px 16px;border-radius:10px;font-weight:700;font-size:13px">إعادة ضبط</button></div></div>
+    <div class="simple-card" style="text-align:center;color:var(--ink-dim);font-size:12.5px">MyStudy © 2026 — صُنع لمساعدتك على التفوق 💜</div>`;
+
+  const darkSwitch = document.getElementById('darkSwitch');
+  if(Store.get('ms_theme','light')==='dark') darkSwitch.classList.add('on');
+  darkSwitch.addEventListener('click', ()=>{ toggleTheme(); darkSwitch.classList.toggle('on'); });
+
+  const remindSwitch = document.getElementById('remindSwitch');
+  if(Store.get('ms_reminders','off')==='on') remindSwitch.classList.add('on');
+  remindSwitch.addEventListener('click', ()=>{
+    const now = Store.get('ms_reminders','off')==='on' ? 'off' : 'on';
+    Store.set('ms_reminders', now); remindSwitch.classList.toggle('on');
+    toast(now==='on' ? 'تم تفعيل التذكيرات' : 'تم إيقاف التذكيرات');
+  });
+
+  document.getElementById('resetBtn').addEventListener('click', ()=>{
+    if(confirm('هل أنت متأكد من إعادة ضبط كل تقدمك؟ لا يمكن التراجع عن هذا الإجراء.')){
+      ['ms_done','ms_quiz','ms_fav','ms_notes','ms_lastlesson','ms_video_pos'].forEach(k=>localStorage.removeItem(k));
+      toast('تم إعادة ضبط التقدم بنجاح');
+      setTimeout(()=> go(''), 900);
+    }
+  });
+}
+
+/* ================= ROUTER ================= */
+function router(){
+  document.getElementById('sidebar').classList.remove('show');
+  const hash = location.hash.replace(/^#\/?/, '');
+  const parts = hash.split('/').filter(Boolean);
+  const route = parts[0] || '';
+
+  renderTopbar();
+
+  if(route === '' ){ renderSidebar('home'); renderHome(false); }
+  else if(route === 'sections'){ renderSidebar('sections'); renderHome(true); }
+  else if(SECTIONS[route]){ renderSidebar('sections'); renderSectionPage(route, parts[1]); }
+  else if(route === 'schedule'){ renderSidebar('schedule'); renderSchedule(parts[1]==='pomodoro'); }
+  else if(route === 'progress'){ renderSidebar('progress'); renderProgressPage(); }
+  else if(route === 'quizzes'){ renderSidebar('quizzes'); renderQuizzesPage(); }
+  else if(route === 'favorites'){ renderSidebar('favorites'); renderFavoritesPage(); }
+  else if(route === 'notes'){ renderSidebar('notes'); renderNotesPage(); }
+  else if(route === 'settings'){ renderSidebar('settings'); renderSettingsPage(); }
+  else { renderSidebar('home'); renderHome(false); }
+
+  window.scrollTo(0,0);
+}
+
+applyTheme();
+window.addEventListener('hashchange', router);
+document.addEventListener('DOMContentLoaded', router);
+</script>
+</body>
+</html>
